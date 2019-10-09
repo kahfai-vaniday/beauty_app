@@ -1,27 +1,8 @@
-# import secrets
-# from datetime import datetime
-#
-# from app.database import db
-#
-#
-# class User(db.Model):
-#     """The User object that owns tasks."""
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.Unicode, nullable=False)
-#     email = db.Column(db.Unicode, nullable=False)
-#     password = db.Column(db.Unicode, nullable=False)
-#     date_joined = db.Column(db.DateTime, nullable=False)
-#     token = db.Column(db.Unicode, nullable=False)
-#
-#     def __init__(self, *args, **kwargs):
-#         """On construction, set date of creation."""
-#         super().__init__(*args, **kwargs)
-#         self.date_joined = datetime.now()
-#         self.token = secrets.token_urlsafe(64)
-
 # Import the database object (db) from the main application module
 # We will define this inside /app/__init__.py in the next sections.
 import secrets
+# Import password / encryption helper tools
+from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 
 
@@ -40,20 +21,19 @@ class Base(db.Model):
 class User(Base):
 
     # User Name
-    name = db.Column(db.String(128), nullable=False)
-    first_name = db.Column(db.String(128), nullable=False)
-    last_name = db.Column(db.String(128), nullable=False)
+    first_name = db.Column(db.String(128), nullable=True)
+    last_name = db.Column(db.String(128), nullable=True)
 
-    phone = db.Column(db.String(128), nullable=False)
-    address = db.Column(db.String(128), nullable=False)
+    phone = db.Column(db.String(128), nullable=True)
+    address = db.Column(db.String(128), nullable=True)
 
     # Identification Data: email & password
     email = db.Column(db.String(128), nullable=False, unique=True)
     password = db.Column(db.String(192), nullable=False)
 
     # Authorisation Data: role & status
-    role = db.Column(db.SmallInteger, nullable=False)
-    status = db.Column(db.SmallInteger, nullable=False)
+    role = db.Column(db.SmallInteger, nullable=True)
+    status = db.Column(db.SmallInteger, nullable=True)
 
     token = db.Column(db.String(255), nullable=False)
 
@@ -64,3 +44,13 @@ class User(Base):
 
     def __repr__(self):
         return '<User %r>' % (self.name)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    @classmethod
+    def set_password_class_method(cls, password):
+        return generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)

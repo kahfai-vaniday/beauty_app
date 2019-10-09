@@ -1,9 +1,6 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, json
 
-# Import password / encryption helper tools
-# from werkzeug import check_password_hash, generate_password_hash
-
 # Import the database object from the main app module
 from app import db
 
@@ -11,7 +8,6 @@ from app import db
 from app.user.models import User
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
-
 mod_user = Blueprint('user', __name__, url_prefix='/user')
 
 # Set the route and accepted methods
@@ -38,3 +34,31 @@ def signin():
     #     flash('Wrong email or password', 'error-message')
 
     return Response(json.dumps({"haha":"1212", "gogo": 3343}), status=200, mimetype='application/json')
+
+
+@mod_user.route('/register/', methods=['POST', 'GET'])
+def register_user():
+
+    result = {"status": False, 'msg': ''}
+    status_code = 400
+    if request.method in ['POST', 'GET']:
+
+        email = 'kahfai@gmail.com'
+        first_name = 'kah fai'
+        last_name = 'chong'
+        password = 'password'
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            result['msg'] = "User already exist!"
+        else:
+            user = User(email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        password=User.set_password_class_method(password))
+            db.session.add(user)
+            db.session.commit()
+            status_code = 201
+            result = {"status": True, 'msg': 'User created successfully.'}
+
+    return Response(json.dumps(result), status=status_code, mimetype='application/json')
