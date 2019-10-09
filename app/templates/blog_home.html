@@ -1,0 +1,26 @@
+<html>
+  <body>
+    <form method="POST" action="/blog">
+      <input type="id" name="id">
+      <input type="name" name="name">
+      <input type="submit" value="Add">
+    </form>
+
+    <h1>Tags</h1>
+    {% for tag in tags %}
+      <p>{{tag.name}}</p>
+      <form method="POST" action="./update">
+        <input type="hidden" value="{{tag.id}}" name="oldtitle">
+        <input type="text" value="{{tag.id}}" name="newtitle">
+        <input type="text" value="{{tag.name}}" name="newtitle">
+        <input type="submit" value="Update">
+      </form>
+
+      <form method="POST" action="./delete">
+        <input type="hidden" value="{{tag.name}}" name="title">
+        <input type="submit" value="Delete">
+      </form>
+    {% endfor %}
+
+  </body>
+</html>
