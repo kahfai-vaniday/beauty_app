@@ -4,6 +4,7 @@ from flask import Flask, render_template
 # Import SQLAlchemy
 
 # Define the WSGI application object
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -28,6 +29,8 @@ app.register_blueprint(user_module)
 # app.register_blueprint(xyz_module)
 # ..
 
+
+migrate = Migrate(app, db)
 # Build the database:
 # This will create the database file using SQLAlchemy
-db.create_all()
+# db.create_all()

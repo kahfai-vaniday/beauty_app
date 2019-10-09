@@ -41,6 +41,11 @@ class User(Base):
 
     # User Name
     name = db.Column(db.String(128), nullable=False)
+    first_name = db.Column(db.String(128), nullable=False)
+    last_name = db.Column(db.String(128), nullable=False)
+
+    phone = db.Column(db.String(128), nullable=False)
+    address = db.Column(db.String(128), nullable=False)
 
     # Identification Data: email & password
     email = db.Column(db.String(128), nullable=False, unique=True)
