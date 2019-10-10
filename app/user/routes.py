@@ -1,15 +1,12 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, json
 
-# Import the database object from the main app module
-from app import db
-
-# Import module models (i.e. User)
 from app.user.controllers import UserController
-from app.user.models import User
+from app.user import models
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 mod_user = Blueprint('user', __name__, url_prefix='/user')
+
 
 # Set the route and accepted methods
 @mod_user.route('/signin/', methods=['POST'])

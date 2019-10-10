@@ -23,11 +23,11 @@ def not_found(error):
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 from app.user.routes import mod_user as user_module
+from app.account.routes import mod_account as account_module
 
 # Register blueprint(s)
+app.register_blueprint(account_module)
 app.register_blueprint(user_module)
-# app.register_blueprint(xyz_module)
-# ..
 
 
 migrate = Migrate(app, db)

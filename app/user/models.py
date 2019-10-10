@@ -12,9 +12,8 @@ class Base(db.Model):
     __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime,  default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime,  default=db.func.current_timestamp(),
-                                           onupdate=db.func.current_timestamp())
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
 
 # Define a User model
@@ -36,6 +35,7 @@ class User(Base):
     status = db.Column(db.SmallInteger, nullable=True)
 
     token = db.Column(db.String(255), nullable=False)
+    jwt_token = db.Column(db.String(255), nullable=True)
 
     def __init__(self, *args, **kwargs):
         """On construction, set date of creation."""
