@@ -36,17 +36,17 @@ def signin():
     return Response(json.dumps({"haha":"1212", "gogo": 3343}), status=200, mimetype='application/json')
 
 
-@mod_user.route('/register/', methods=['POST', 'GET'])
+@mod_user.route('/register/', methods=['POST'])
 def register_user():
 
     result = {"status": False, 'msg': ''}
     status_code = 400
-    if request.method in ['POST', 'GET']:
+    if request.method == 'POST':
 
-        email = 'kahfai@gmail.com'
-        first_name = 'kah fai'
-        last_name = 'chong'
-        password = 'password'
+        email = request.json.get("email")
+        first_name = request.json.get("first_name")
+        last_name = request.json.get("last_name")
+        password = request.json.get("password")
 
         user = User.query.filter_by(email=email).first()
         if user:
