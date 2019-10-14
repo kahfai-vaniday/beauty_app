@@ -34,6 +34,9 @@ class User(Base):
     role = db.Column(db.SmallInteger, nullable=True)
     status = db.Column(db.SmallInteger, nullable=True)
 
+    account_creator = db.relationship('Account', backref='account_creator', lazy='dynamic')
+    location_creator = db.relationship('Location', backref='location_creator', lazy='dynamic')
+
     token = db.Column(db.String(255), nullable=False)
     jwt_token = db.Column(db.String(255), nullable=True)
 

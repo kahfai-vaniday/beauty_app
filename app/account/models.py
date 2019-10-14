@@ -8,7 +8,7 @@ class Account(db.Model):
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
 
-    shop_name = db.Column(db.String(255), nullable=False, unique=True)
+    business_name = db.Column(db.String(255), nullable=False, unique=True)
 
     timezone = db.Column(db.String(128), nullable=True)
     time_format = db.Column(db.String(128), nullable=True)
@@ -20,9 +20,9 @@ class Account(db.Model):
     instagram_page = db.Column(db.String(255), nullable=True)
 
     location = db.relationship('Location', backref='location', lazy='dynamic')
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, *args, **kwargs):
-        """On construction, set date of creation."""
         super().__init__(*args, **kwargs)
 
     def __repr__(self):
@@ -44,6 +44,8 @@ class Location(db.Model):
     city = db.Column(db.String(150), nullable=False)
     state = db.Column(db.String(150), nullable=False)
     zip_code = db.Column(db.String(100), nullable=False)
+
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return '{}'.format(self.location_name)
