@@ -9,7 +9,7 @@ from app import db, app
 
 # Import module models (i.e. User)
 from app.user.models import User
-from config import SECRET_KEY
+from config import SECRET_KEY, JWT_TOKEN_VALID_DAY
 
 
 class AuthController(object):
@@ -22,7 +22,7 @@ class AuthController(object):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=JWT_TOKEN_VALID_DAY),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
