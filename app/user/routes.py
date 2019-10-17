@@ -1,25 +1,26 @@
 # Import flask dependencies
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, json
 
-from app.user.controllers import UserController
+from app.user.controllers import RegisterAPI, UserSignInAPI
 from app.user import models
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 mod_user = Blueprint('user', __name__, url_prefix='/user')
 
 
-# Set the route and accepted methods
-@mod_user.route('/signin/', methods=['POST'])
-def signin():
+# define the API resources
+registration_view = RegisterAPI.as_view('register_api')
+user_signin_view = UserSignInAPI.as_view('user_signin_api')
 
-    result, status_code = UserController.controller_user_sign_in(request)
+# add Rules for API Endpoints
+mod_user.add_url_rule(
+    '/register/',
+    view_func=registration_view,
+    methods=['POST']
+)
 
-    return Response(json.dumps(result), status=status_code, mimetype='application/json')
-
-
-@mod_user.route('/register/', methods=['POST'])
-def register_user():
-
-    result, status_code = UserController.controller_register_user(request)
-
-    return Response(json.dumps(result), status=status_code, mimetype='application/json')
+mod_user.add_url_rule(
+    '/signin/',
+    view_func=user_signin_view,
+    methods=['POST']
+)

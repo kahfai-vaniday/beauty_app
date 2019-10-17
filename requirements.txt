@@ -3,3 +3,4 @@ sqlalchemy
 flask-sqlalchemy
 pymysql
 flask-migrate
+pyjwt

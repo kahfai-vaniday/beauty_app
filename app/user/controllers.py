@@ -1,36 +1,58 @@
 # Import the database object from the main app module
-from app import db
+import datetime
+
+import jwt
+from flask.views import MethodView
+from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, json
+
+from app import db, app
 
 # Import module models (i.e. User)
 from app.user.models import User
+from config import SECRET_KEY
 
 
-class UserController(object):
-
-    @classmethod
-    def controller_user_sign_in(cls, request):
-        result = {"status": False, 'msg': 'Failed to login!', 'token': None}
-        status_code = 400
-
-        if request.method == 'POST' and 'email' in request.json.keys() and 'password' in request.json.keys():
-
-            email = request.json.get("email")
-            password = request.json.get("password")
-
-            user = User.query.filter_by(email=email).first()
-            if user:
-                if user.check_password(password):
-
-                    status_code = 200
-                    result = {"status": True, 'msg': 'Successfully login.', 'token': user.token}
-                else:
-                    result['msg'] = "Wrong Password"
-            else:
-                result['msg'] = "User does not exist."
-        return result, status_code
+class AuthController(object):
 
     @classmethod
-    def controller_register_user(cls, request):
+    def encode_auth_token(cls, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                SECRET_KEY,
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @classmethod
+    def decode_auth_token(cls, auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, SECRET_KEY)
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
+
+
+class RegisterAPI(MethodView):
+
+    def post(self):
         result = {"status": False, 'msg': ''}
         status_code = 400
         if request.method == 'POST':
@@ -52,4 +74,29 @@ class UserController(object):
                 db.session.commit()
                 status_code = 201
                 result = {"status": True, 'msg': 'User created successfully.'}
-        return result, status_code
+        return Response(json.dumps(result), status=status_code, mimetype='application/json')
+
+
+class UserSignInAPI(MethodView):
+
+    def post(self):
+        result = {"status": False, 'msg': 'Failed to login!', 'token': None}
+        status_code = 400
+
+        if request.method == 'POST' and 'email' in request.json.keys() and 'password' in request.json.keys():
+
+            email = request.json.get("email")
+            password = request.json.get("password")
+
+            user = User.query.filter_by(email=email).first()
+            if user:
+                if user.check_password(password):
+
+                    auth_token = str(AuthController.encode_auth_token(user.id), 'utf-8')
+                    status_code = 200
+                    result = {"status": True, 'msg': 'Successfully login.', 'token': auth_token}
+                else:
+                    result['msg'] = "Wrong Password"
+            else:
+                result['msg'] = "User does not exist."
+        return Response(json.dumps(result), status=status_code, mimetype='application/json')

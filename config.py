@@ -25,4 +25,4 @@ CSRF_ENABLED = True
 CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
-SECRET_KEY = "secret"
+SECRET_KEY = "asfhdsakjfbdh&^%*^%$)fdkjhdf9870813yjhgaf)&DNDH(&^lkafhklasfhbk*^&%"

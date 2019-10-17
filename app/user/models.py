@@ -46,7 +46,7 @@ class User(Base):
         self.token = secrets.token_urlsafe(64)
 
     def __repr__(self):
-        return '<User %r>' % (self.name)
+        return '{}'.format(self.first_name)
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
