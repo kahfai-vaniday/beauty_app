@@ -7,7 +7,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database - we are working with
 # SQLite for this example
-database_file = 'mysql+pymysql://root:admin123@localhost/bookstore'
+database_file = 'mysql+pymysql://root:admin123@localhost/beautystore'
 SQLALCHEMY_DATABASE_URI = database_file
 DATABASE_CONNECT_OPTIONS = {}
 
